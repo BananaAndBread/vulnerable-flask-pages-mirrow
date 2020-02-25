@@ -1,6 +1,10 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, flash
+from db.db import close_connection, query_db
 
 app = Flask(__name__)
+
+# Necessary for db. It close db after each requests dead
+app.teardown_appcontext(close_connection)
 
 # ◕_◕ довойте нумеровать странички согласно их
 # номеру в том списке с типами уязвимостей ◕_◕
@@ -23,7 +27,20 @@ def task2():
     ''' SQL injection '''
     if request.method == 'GET':
         return render_template('task2.html')
-    
+
+    # Get the username and password from the form
+    username = request.form.get('username')
+    password = request.form.get('password')
+
+    # Try to login with username and password
+    query = f'SELECT * FROM users WHERE name={username} AND 1 != 1'
+    res = query_db(query)
+
+    # Return flag if user in the DB
+    if len(res) > 0:
+        pass
+    else:
+        return render_template('task2.html')
 
 
 @app.route('/task3', methods=['GET', 'POST'])
@@ -32,11 +49,15 @@ def task3():
     if request.method == 'GET':
         return render_template('task3.html')
 
+    # Get price from the form and generate response
     price = request.form.get('price')
-    if price and price != '99.99':
-        return 'You are good! Your flag'
-    else:
-        return 'Thank you for purchase'
+    response = f'Thank you for purchase! The cost is <b>{price}$</b>.' 
+
+    # If the price is less than original add flag to the response
+    if price and float(price) < 99.99:
+        response = response + 'Your flag flag{S051Je84}'
+
+    return response
     
 
 @app.route('/task4')
@@ -65,4 +86,8 @@ def task8():
 
 
 if __name__ == '__main__':
+    # Secret key and session type specification
+    app.secret_key = 'super secret key'
+    app.config['SESSION_TYPE'] = 'filesystem'
+
     app.run(debug=True)

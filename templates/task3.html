@@ -1,10 +1,14 @@
+{% extends "layout.html" %}
+{% block body %}
+
 <h1> Welcome to the Sporebank </h1>
 
-Thank you for choosing our bank!!!
-
+Thank you for choosing our bank!!!<br>
 Price of the product is <b>99.99$</b>. Please confirm the deal.
 
 <form method="post">
   <input type="hidden" name="price" value="99.99"/>
   <input type="submit" value="Submit" />
 </form>
+
+{% endblock body %}

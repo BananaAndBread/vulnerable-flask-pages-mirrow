@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<h1> Welcome to <i>"Smeshariki"</i> official fan site</h1>
+You need to be logged in to have an access to the web app!!!
+<br>
+
+<form method="post">
+  <label for="username"> Username: </label>
+  <select class="form-control" name="username">
+    <option value="admin">Admin</option>
+    <option value="pupa">Pupa</option>
+    <option value="lupa">Lupa</option>
+  </select>
+
+  <br>
+  <input type="password" name="password" placeholder="Password"/>
+  <input type="submit" value="Submit"/>
+</form>
+
+{% endblock body %}
