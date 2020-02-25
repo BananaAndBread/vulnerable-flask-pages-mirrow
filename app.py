@@ -1,10 +1,9 @@
 from flask import Flask, render_template, request, flash
-from db.db import close_connection, query_db
+from db.db import close_connection, query_db, init_db
 
+
+# Init Flask application
 app = Flask(__name__)
-
-# Necessary for db. It close db after each requests dead
-app.teardown_appcontext(close_connection)
 
 # ◕_◕ довойте нумеровать странички согласно их
 # номеру в том списке с типами уязвимостей ◕_◕
@@ -33,14 +32,16 @@ def task2():
     password = request.form.get('password')
 
     # Try to login with username and password
-    query = f'SELECT * FROM users WHERE name={username} AND 1 != 1'
+    query = f"SELECT * FROM users WHERE name='{username}' AND 1 != 1"
     res = query_db(query)
 
     # Return flag if user in the DB
     if len(res) > 0:
-        pass
+        flash('YOUR FLAG FLAG{shitshitshit}')
     else:
-        return render_template('task2.html')
+        flash('Wrong username or password. Please try again')
+
+    return render_template('task2.html')
 
 
 @app.route('/task3', methods=['GET', 'POST'])
@@ -89,5 +90,12 @@ if __name__ == '__main__':
     # Secret key and session type specification
     app.secret_key = 'super secret key'
     app.config['SESSION_TYPE'] = 'filesystem'
+
+
+    # Necessary for db. It close db after each requests dead
+    app.teardown_appcontext(close_connection)
+
+    # Init DB
+    init_db()
 
     app.run(debug=True)
