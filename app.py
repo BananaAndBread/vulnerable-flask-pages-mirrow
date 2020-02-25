@@ -32,6 +32,11 @@ def task3():
     if request.method == 'GET':
         return render_template('task3.html')
 
+    price = request.form.get('price')
+    if price and price != '99.99':
+        return 'You are good! Your flag'
+    else:
+        return 'Thank you for purchase'
     
 
 @app.route('/task4')
