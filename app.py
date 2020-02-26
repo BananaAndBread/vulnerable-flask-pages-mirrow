@@ -114,9 +114,16 @@ def task5():
     return send_file(os.path.join(os.getcwd(), image_name))
 
 
-@app.route('/task6')
+@app.route('/task6', methods=['GET', 'POST'])
 def task6():
-    return render_template('task1.html')
+    if request.method == 'GET':
+        return render_template('task6.html')
+    
+    command = request.form.get('cmd') + ' kids_folder/linux_for_kids/' \
+        + request.form.get('arg')
+    command = command.replace('.', '')
+    answer = os.popen(command).read()[:50]
+    return render_template('task6.html', answer=answer)
 
 
 @app.route('/task7')
