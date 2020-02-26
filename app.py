@@ -1,7 +1,7 @@
 import os
 from urllib.parse import urljoin
 
-from flask import Flask, render_template, request, flash, send_file
+from flask import Flask, render_template, request, flash, send_file, make_response
 from db.db import close_connection, query_db, init_db
 from wtforms import TextField
 from flask import redirect
@@ -117,14 +117,29 @@ def task5():
     return send_file(os.path.join(os.getcwd(), image_name))
 
 
-@app.route('/task6')
+@app.route('/task6', methods=['GET', 'POST'])
 def task6():
-    return render_template('task1.html')
+    if request.method == 'GET':
+        return render_template('task6.html')
+    
+    command = request.form.get('cmd') + ' kids_folder/linux_for_kids/' \
+        + request.form.get('arg')
+    command = command.replace('.', '')
+    answer = os.popen(command).read()[:50]
+    return render_template('task6.html', answer=answer)
 
 
 @app.route('/task7')
 def task7():
-    return render_template('task1.html')
+    link = request.args.get('link')
+    if not link:
+        link = ''
+        return render_template('task7.html', link=link)
+    else:
+        resp = make_response(render_template('task7.html', link=link))
+        resp.set_cookie('flag', '{84d_9uy}')
+        return resp 
+
 
 
 @app.route('/task8')
