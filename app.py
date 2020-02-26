@@ -6,9 +6,12 @@ from db.db import close_connection, query_db, init_db
 from wtforms import TextField
 from flask import redirect
 from flask_wtf import Form
+
 # Init Flask application
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'our very hard to guess secretfir'
+
+
 # ◕_◕ довойте нумеровать странички согласно их
 # номеру в том списке с типами уязвимостей ◕_◕
 
