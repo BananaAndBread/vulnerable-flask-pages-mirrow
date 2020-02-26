@@ -1,7 +1,7 @@
 import os
 from urllib.parse import urljoin
 
-from flask import Flask, render_template, request, flash, send_file
+from flask import Flask, render_template, request, flash, send_file, make_response
 from db.db import close_connection, query_db, init_db
 from wtforms import TextField
 from flask import redirect
@@ -128,7 +128,15 @@ def task6():
 
 @app.route('/task7')
 def task7():
-    return render_template('task1.html')
+    link = request.args.get('link')
+    if not link:
+        link = ''
+        return render_template('task7.html', link=link)
+    else:
+        resp = make_response(render_template('task7.html', link=link))
+        resp.set_cookie('flag', '{84d_9uy}')
+        return resp 
+
 
 
 @app.route('/task8')

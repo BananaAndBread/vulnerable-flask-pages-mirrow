@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Toxic</title>
+</head>
+<body>
+<h1>Welcome!</h1>
+<p>I rate the pictures, try sending me something</p>
+{% if link|length == 0 %}
+<p>For example, there is my cool picture!</p>
+<img src="static/my_art.jpeg"/>
+{% else %}
+<p>Ha, even I paint better. You have no talent</p>
+<img src={{link}}>
+{% endif %}
+
+<form method="get">
+    <input name="link" placeholder="link">
+    <input type="submit" value="Show"/>
+  </form>
+</body>
+</html>
