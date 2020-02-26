@@ -1,10 +1,14 @@
-from flask import Flask, render_template, request, flash
+import os
+from urllib.parse import urljoin
+
+from flask import Flask, render_template, request, flash, send_file
 from db.db import close_connection, query_db, init_db
-
-
+from wtforms import TextField
+from flask import redirect
+from flask_wtf import Form
 # Init Flask application
 app = Flask(__name__)
-
+app.config['SECRET_KEY'] = 'our very hard to guess secretfir'
 # ◕_◕ довойте нумеровать странички согласно их
 # номеру в том списке с типами уязвимостей ◕_◕
 
@@ -61,14 +65,53 @@ def task3():
     return response
     
 
-@app.route('/task4')
+@app.route('/task4',  methods=['GET', 'POST'])
 def task4():
-    return render_template('task1.html')
+    def urljoin_fallback(base, suffix):
+        if "http" not in suffix:
+            return urljoin('http://' + base, suffix)
+        else:
+            return suffix
+    class RegistrationForm(Form):
+        first_name = TextField('Nickname')
+        password = TextField('Password')
+    error = ""
+    form = RegistrationForm(request.form)
 
+    if request.method == 'POST':
+        first_name = form.first_name.data
+        last_name = form.password.data
+        next = request.form["next"]
+        next = urljoin_fallback(request.host, next)
+        print(next)
+        if len(first_name) == 0 or len(last_name) == 0:
+            error = "Please supply both first and last name"
+
+        else:
+            if next == "http://xoxoxoyougothacked.com" or next == "https://xoxoxoyougothacked.com" or next == "http://www.xoxoxoyougothacked.com":
+                next = urljoin_fallback(request.host, "/task4/UumduaZUtS")
+
+                return redirect(next)
+
+            return redirect(next)
+
+    return render_template('task4/login.html', form=form, message=error)
+
+@app.route('/task4/news')
+def news():
+    return render_template('task4/news.html')
+
+@app.route('/task4/UumduaZUtS')
+def flag():
+    return 'flag{UumduaZUtS}'
 
 @app.route('/task5')
 def task5():
-    return render_template('task1.html')
+    image_name = request.args.get('image_name')
+    print(image_name)
+    if not image_name:
+        return redirect("task5?image_name=static/yoda.png")
+    return send_file(os.path.join(os.getcwd(), image_name))
 
 
 @app.route('/task6')
