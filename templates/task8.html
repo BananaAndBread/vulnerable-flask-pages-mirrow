@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<h1>Jinja2 Programming Crash Course for T4u3 H@Ck39s</h1>
+<br>
+
+<form method="post">
+    <label for="name"> Your name: </label>
+    <br>
+    <br>
+
+    <!-- TODO: remove FileIO from Jinja's envs -->
+    <!-- TODO: move secrets from configs/flag to project's .env before production -->
+
+    <label>
+        <input id="name" type="text" name="name" placeholder="Your name"/>
+    </label>
+    <label>
+        <input type="submit" value="Submit"/>
+    </label>
+</form>
+
+{% endblock body %}
