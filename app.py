@@ -1,14 +1,18 @@
 import os
 from urllib.parse import urljoin
 
-from flask import Flask, render_template, request, flash, send_file, make_response
+from flask import Flask, render_template, request, flash, send_file, make_response, render_template_string
 from db.db import close_connection, query_db, init_db
 from wtforms import TextField
 from flask import redirect
+from parso.file_io import FileIO
 from flask_wtf import Form
+
 # Init Flask application
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'our very hard to guess secretfir'
+
+
 # ◕_◕ довойте нумеровать странички согласно их
 # номеру в том списке с типами уязвимостей ◕_◕
 
@@ -56,25 +60,27 @@ def task3():
 
     # Get price from the form and generate response
     price = request.form.get('price')
-    response = f'Thank you for purchase! The cost is <b>{price}$</b>.' 
+    response = f'Thank you for purchase! The cost is <b>{price}$</b>.'
 
     # If the price is less than original add flag to the response
     if price and float(price) < 99.99:
         response = response + 'Your flag flag{S051Je84}'
 
     return response
-    
 
-@app.route('/task4',  methods=['GET', 'POST'])
+
+@app.route('/task4', methods=['GET', 'POST'])
 def task4():
     def urljoin_fallback(base, suffix):
         if "http" not in suffix:
             return urljoin('http://' + base, suffix)
         else:
             return suffix
+
     class RegistrationForm(Form):
         first_name = TextField('Nickname')
         password = TextField('Password')
+
     error = ""
     form = RegistrationForm(request.form)
 
@@ -97,13 +103,16 @@ def task4():
 
     return render_template('task4/login.html', form=form, message=error)
 
+
 @app.route('/task4/news')
 def news():
     return render_template('task4/news.html')
 
+
 @app.route('/task4/UumduaZUtS')
 def flag():
     return 'flag{UumduaZUtS}'
+
 
 @app.route('/task5')
 def task5():
@@ -118,9 +127,9 @@ def task5():
 def task6():
     if request.method == 'GET':
         return render_template('task6.html')
-    
+
     command = request.form.get('cmd') + ' kids_folder/linux_for_kids/' \
-        + request.form.get('arg')
+              + request.form.get('arg')
     command = command.replace('.', '')
     answer = os.popen(command).read()[:50]
     return render_template('task6.html', answer=answer)
@@ -135,12 +144,31 @@ def task7():
     else:
         resp = make_response(render_template('task7.html', link=link))
         resp.set_cookie('flag', '{84d_9uy}')
-        return resp 
+        return resp
 
 
-
-@app.route('/task8')
+@app.route('/task8', methods=['GET', 'POST'])
 def task8():
+    """
+    LFI
+    """
+
+    app.jinja_env.globals['FileIO'] = FileIO
+
+    if request.method == 'GET':
+        return render_template('task8.html')
+
+    if request.form.get('name'):
+        name = request.form.get('name')
+    else:
+        raise ValueError
+
+    template = '''Serving secure jinja templates for {{ %s | e }}''' % name
+    return render_template_string(template)
+
+
+@app.route('/task9')
+def task9():
     return render_template('task1.html')
 
 
@@ -148,7 +176,6 @@ if __name__ == '__main__':
     # Secret key and session type specification
     app.secret_key = 'super secret key'
     app.config['SESSION_TYPE'] = 'filesystem'
-
 
     # Necessary for db. It close db after each requests dead
     app.teardown_appcontext(close_connection)
