@@ -7,6 +7,7 @@ from wtforms import TextField
 from flask import redirect
 from parso.file_io import FileIO
 from flask_wtf import Form
+from selenium import webdriver
 
 # Init Flask application
 app = Flask(__name__)
@@ -24,8 +25,27 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/task1')
+@app.route('/task1', methods=['GET', 'POST'])
 def task1():
+    """
+    CSRF?
+    """
+    if request.method == 'POST' and request.form.get('xss'):
+        script = request.form.get('xss')
+        options = webdriver.ChromeOptions()
+        options.headless = True
+        driver = webdriver.Chrome(options=options)
+        driver.get('http://localhost:5000/')
+
+        # driver.add_cookie(dict(name='sne_csrftoken',
+        #                        domain='localhost',  # this dork breaks here
+        #                        value='1337'))
+
+        driver.execute_script('document.cookie = \'sne_csrftoken=1337\'')
+        driver.execute_script(script)
+
+        driver.quit()
+
     return render_template('task1.html')
 
 
@@ -165,11 +185,6 @@ def task8():
 
     template = '''Serving secure jinja templates for {{ %s | e }}''' % name
     return render_template_string(template)
-
-
-@app.route('/task9')
-def task9():
-    return render_template('task1.html')
 
 
 if __name__ == '__main__':
