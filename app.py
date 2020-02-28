@@ -27,15 +27,17 @@ def index():
 
 @app.route('/task1', methods=['GET', 'POST'])
 def task1():
-    """
-    CSRF?
-    """
     if request.method == 'POST' and request.form.get('xss'):
         script = request.form.get('xss')
         options = webdriver.ChromeOptions()
         options.headless = True
-        driver = webdriver.Chrome(options=options)
-        driver.get('http://localhost:5000/')
+        # driver = webdriver.Chrome(options=options)
+
+        driver = webdriver.Remote(desired_capabilities=webdriver.DesiredCapabilities.CHROME,
+                                  options=options,
+                                  command_executor='http://localhost:4444/wd/hub')
+
+        driver.get('http://localhost:5000')
 
         # driver.add_cookie(dict(name='sne_csrftoken',
         #                        domain='localhost',  # this dork breaks here
