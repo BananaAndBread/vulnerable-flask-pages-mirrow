@@ -45,7 +45,7 @@ def task2():
 
     # Return flag if user in the DB
     if len(res) > 0:
-        flash('YOUR FLAG FLAG{shitshitshit}')
+        flash('YOUR FLAG FLAG{555hHh111777}')
     else:
         flash('Wrong username or password. Please try again')
 
@@ -64,7 +64,7 @@ def task3():
 
     # If the price is less than original add flag to the response
     if price and float(price) < 99.99:
-        response = response + 'Your flag flag{S051Je84}'
+        response = response + 'Your flag flag{5051j3Pu}'
 
     return response
 
