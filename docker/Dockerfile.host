@@ -1,0 +1,7 @@
+from docker
+
+# no dind
+
+copy host_start.sh .
+
+cmd sh host_start.sh
