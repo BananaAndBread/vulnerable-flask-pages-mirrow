@@ -165,7 +165,7 @@ def task7():
         return render_template('task7.html', link=link)
     else:
         resp = make_response(render_template('task7.html', link=link))
-        resp.set_cookie('flag', '{84d_9uy}')
+        resp.set_cookie('flag', 'flag{84d_9uy}')
         return resp
 
 
